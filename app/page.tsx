@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import {
   ArrowUpRight,
-  AudioLines,
   BriefcaseBusiness,
   CalendarClock,
   CircleAlert,
@@ -16,6 +15,7 @@ import {
   Shield,
   Users,
 } from "lucide-react";
+import EquiVoiceMockMeeting from "./components/EquiVoiceMockMeeting";
 
 type PersonaMode = "Engineer Mode" | "Manager Mode";
 type BugStage = "Incoming" | "Triage" | "Ready to Fix";
@@ -123,48 +123,6 @@ const recallResults: Array<{
     description:
       "Documented milestones for webhook hardening, SSO governance, and regional failover drills.",
     timestamp: "Yesterday, 17:06",
-  },
-];
-
-const transcriptLines = [
-  {
-    speaker: "Rina",
-    text: "Let's confirm all teams can meet the Friday migration checkpoint.",
-    localized: "Aaiye Friday migration checkpoint par sab teams ki readiness confirm karein.",
-  },
-  {
-    speaker: "Marco",
-    text: "I can own the incident drill notes and publish after this call.",
-    localized: "Main incident drill notes ki zimmedari le sakta hun aur call ke baad publish karunga.",
-  },
-  {
-    speaker: "System",
-    text: "Reminder: Jargon detected - rolling brownout. Context has been expanded.",
-    localized: "Yaad dilaya gaya: Jargon detect hua - rolling brownout. Context expand kiya gaya.",
-  },
-];
-
-const inclusivityNudges = [
-  "Invite Mei to comment on risk assumptions before finalizing timelines.",
-  "Round-robin check: ensure remote attendees are asked for blockers.",
-  "Use plain language for API gateway incident summary before action items.",
-];
-
-const jargonGlossary = [
-  {
-    term: "Rolling Brownout",
-    definition:
-      "A controlled partial service degradation used to test resilience before full incident handling.",
-  },
-  {
-    term: "Blast Radius",
-    definition:
-      "The scope of systems, users, or teams affected by a deployment or incident.",
-  },
-  {
-    term: "P95 Latency",
-    definition:
-      "The response time below which 95% of requests complete.",
   },
 ];
 
@@ -374,49 +332,7 @@ function ManagerModeView() {
           subtitle="Live meeting intelligence with inclusivity and terminology support."
           icon={Users}
         >
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <p className="text-sm font-semibold text-slate-900">Live Meeting Assistant</p>
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                <AudioLines className="h-3.5 w-3.5" />
-                Live
-              </span>
-            </div>
-            <div className="h-56 space-y-2 overflow-auto rounded-lg border border-slate-200 bg-white p-3">
-              {transcriptLines.map((line, index) => (
-                <div key={`${line.speaker}-${index}`} className="rounded-lg border border-slate-100 p-2">
-                  <p className="text-xs font-semibold text-slate-700">{line.speaker}</p>
-                  <p className="mt-1 text-sm text-slate-900">{line.text}</p>
-                  <p className="mt-1 text-xs text-slate-500">{line.localized}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <p className="mb-3 text-sm font-semibold text-slate-900">Inclusivity Nudges</p>
-              <ul className="space-y-2">
-                {inclusivityNudges.map((nudge) => (
-                  <li key={nudge} className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
-                    {nudge}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <p className="mb-3 text-sm font-semibold text-slate-900">Corporate Jargon Definitions</p>
-              <div className="space-y-2">
-                {jargonGlossary.map((item) => (
-                  <article key={item.term} className="rounded-lg border border-slate-200 bg-slate-50 p-2">
-                    <p className="text-xs font-semibold text-slate-800">{item.term}</p>
-                    <p className="mt-1 text-xs text-slate-600">{item.definition}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
+          <EquiVoiceMockMeeting />
         </SectionCard>
       </div>
     </div>
@@ -494,6 +410,3 @@ export default function Home() {
     </div>
   );
 }
-
-
-
