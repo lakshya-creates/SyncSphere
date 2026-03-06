@@ -5,7 +5,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowUpRight,
-  AudioLines,
   BriefcaseBusiness,
   CalendarClock,
   CircleAlert,
@@ -20,11 +19,50 @@ import {
   TerminalSquare,
   Loader2,
   Code2,
+  AudioLines,
 } from "lucide-react";
 
 type PersonaMode = "Engineer Mode" | "Manager Mode";
 type BugStage = "Incoming" | "Triage" | "Ready to Fix";
 type SourceType = "Teams Chat" | "Outlook Email" | "SharePoint File" | "Discord Chat" | "GitHub Commit" | "Repository Code";
+
+interface QueueItem {
+  id: string;
+  bugTitle: string;
+  repoData?: {
+    issueNumber?: number;
+    repo?: string;
+  };
+  decision?: {
+    analysis?: {
+      priority?: string;
+      root_cause?: string;
+    };
+    routing_strategy?: {
+      assignee_github_handle?: string;
+    };
+  };
+}
+
+interface LogItem {
+  issue: string;
+  title: string;
+  reason: string;
+  action?: string;
+}
+
+interface EngineerData {
+  success: boolean;
+  status: string;
+  discordChats?: Array<{
+    author: string;
+    threadId: string;
+    content: string;
+    date: string;
+  }>;
+  queue?: QueueItem[];
+  logs?: LogItem[];
+}
 
 // --- STATIC FALLBACKS (In case API is empty/offline) ---
 const teamsMutedMessages = [
@@ -247,7 +285,7 @@ function CodebaseAssistant() {
       } else {
         setAnswer("⚠️ Error: " + data.error);
       }
-    } catch (err) {
+    } catch {
       setAnswer("⚠️ Failed to connect to SyncSphere AI backend. Is the server running?");
     } finally {
       setIsLoading(false);
@@ -310,14 +348,14 @@ function EngineerModeView() {
     async function fetchEngineerData() {
       try {
         const res = await fetch("/api/engineer-data");
-        const data = await res.json();
+        const data: EngineerData = await res.json();
         
         if (data.success) {
           setUserStatus(data.status);
           
           // Map Discord Chats from Graph RAG
           if (data.discordChats && data.discordChats.length > 0) {
-            setDiscordMessages(data.discordChats.map((chat: any) => ({
+            setDiscordMessages(data.discordChats.map((chat) => ({
               sender: chat.author,
               channel: chat.threadId.replace("channel_", "#"),
               preview: chat.content,
@@ -326,10 +364,10 @@ function EngineerModeView() {
           }
 
           // Map Queue + Logs into the GitMind Board
-          const dynamicBugs: any[] = [];
+          const dynamicBugs: typeof bugReports = [];
           
           // Queued items map to -> Incoming
-          data.queue?.forEach((q: any) => {
+          data.queue?.forEach((q) => {
             dynamicBugs.push({
               id: q.repoData?.issueNumber ? `BUG-${q.repoData.issueNumber}` : `Q-${q.id.substring(0,4)}`,
               title: q.bugTitle,
@@ -341,7 +379,7 @@ function EngineerModeView() {
           });
 
           // Logged items map to -> Triage or Ready to Fix
-          data.logs?.forEach((log: any, idx: number) => {
+          data.logs?.forEach((log, idx) => {
             dynamicBugs.push({
               id: log.issue.split(' • ')[0] || `BUG-${9000 + idx}`,
               title: log.title,
@@ -479,7 +517,13 @@ function EngineerModeView() {
 
 function ManagerModeView() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>(recallResults);
+  const [searchResults, setSearchResults] = useState<Array<{
+    title: string;
+    source: SourceType;
+    description: string;
+    timestamp: string;
+    url?: string;
+  }>>(recallResults);
   const [isSearching, setIsSearching] = useState(false);
 
   // 🔴 LIVE RECALL MODULE SYNC 🔴
