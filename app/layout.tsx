@@ -3,8 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SyncSphere Dashboard Prototype",
-  description:
-    "Enterprise AI productivity dashboard spanning Microsoft and GitHub ecosystems.",
+  description: "Enterprise AI productivity dashboard spanning Microsoft and GitHub ecosystems.",
 };
 
 export default function RootLayout({
