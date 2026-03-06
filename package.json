@@ -1,22 +1,24 @@
 {
-  "name": "sync_sphere",
+  "name": "testing",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev:next": "next dev",
+    "dev:webhook": "npx smee-client --url https://smee.io/lW9EorHg62yW6B --target http://localhost:3000/api/webhook",
+    "dev:worker": "npx tsx --env-file=.env app/scripts/system-worker.ts",
+    "dev": "concurrently -c \"cyan,magenta,yellow\" -n \"NEXT,SMEE,WORKER\" \"npm run dev:next\" \"npm run dev:webhook\" \"npm run dev:worker\"",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@ai-sdk/azure": "^3.0.42",
-    "@azure/identity": "^4.13.0",
-    "@microsoft/microsoft-graph-client": "^3.0.7",
-    "ai": "^6.0.116",
+    "discord.js": "^13.17.1",
+    "dotenv": "^17.3.1",
     "lucide-react": "^0.577.0",
     "next": "16.1.6",
-    "next-auth": "^4.24.13",
-    "octokit": "^5.0.5",
+    "openai": "^6.27.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
@@ -25,9 +27,21 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "smee-client": "^5.0.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,jsx,json,css,md}": [
+      "prettier --write"
+    ]
   }
 }
