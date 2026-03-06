@@ -316,55 +316,57 @@ function EngineerModeView() {
 function ManagerModeView() {
   return (
     <div className="grid gap-6 xl:grid-cols-5">
-      <SectionCard
-        title="Recall Module"
-        subtitle="Unified memory search across Teams, Outlook, and SharePoint."
-        icon={Search}
-      >
-        <div className="mx-auto max-w-3xl rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-          <label htmlFor="recall-search" className="sr-only">
-            Search synchronized context
-          </label>
-          <div className="flex items-center gap-3 rounded-full border border-slate-300 bg-white px-4 py-3 shadow-[0_10px_28px_-20px_rgba(2,6,23,0.7)]">
-            <Search className="h-4 w-4 text-slate-500" />
-            <input
-              id="recall-search"
-              defaultValue="Show decisions made this week about deployment sync risks"
-              className="w-full bg-transparent text-sm text-slate-800 outline-none"
-            />
-          </div>
-          <div className="mt-4 space-y-3">
-            {recallResults.map((result) => {
-              const Icon = sourceIcons[result.source];
-              return (
-                <article key={result.title} className="rounded-xl border border-slate-200 bg-white p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-md border border-slate-200 bg-slate-50 p-1.5">
-                        <Icon className="h-4 w-4 text-slate-700" />
-                      </span>
-                      <p className="text-sm font-semibold text-slate-900">{result.title}</p>
+      <div className="xl:col-span-3">
+        <SectionCard
+          title="Recall Module"
+          subtitle="Unified memory search across Teams, Outlook, and SharePoint."
+          icon={Search}
+        >
+          <div className="mx-auto max-w-3xl rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+            <label htmlFor="recall-search" className="sr-only">
+              Search synchronized context
+            </label>
+            <div className="flex items-center gap-3 rounded-full border border-slate-300 bg-white px-4 py-3 shadow-[0_10px_28px_-20px_rgba(2,6,23,0.7)]">
+              <Search className="h-4 w-4 text-slate-500" />
+              <input
+                id="recall-search"
+                defaultValue="Show decisions made this week about deployment sync risks"
+                className="w-full bg-transparent text-sm text-slate-800 outline-none"
+              />
+            </div>
+            <div className="mt-4 space-y-3">
+              {recallResults.map((result) => {
+                const Icon = sourceIcons[result.source];
+                return (
+                  <article key={result.title} className="rounded-xl border border-slate-200 bg-white p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-md border border-slate-200 bg-slate-50 p-1.5">
+                          <Icon className="h-4 w-4 text-slate-700" />
+                        </span>
+                        <p className="text-sm font-semibold text-slate-900">{result.title}</p>
+                      </div>
+                      <p className="text-xs text-slate-500">{result.timestamp}</p>
                     </div>
-                    <p className="text-xs text-slate-500">{result.timestamp}</p>
-                  </div>
-                  <p className="mt-2 text-sm text-slate-600">{result.description}</p>
-                  <div className="mt-3 flex items-center gap-2">
-                    <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600">
-                      {result.source}
-                    </span>
-                    <button
-                      type="button"
-                      className="inline-flex items-center gap-1 text-xs font-medium text-sky-700 hover:text-sky-800"
-                    >
-                      Open thread <ArrowUpRight className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
+                    <p className="mt-2 text-sm text-slate-600">{result.description}</p>
+                    <div className="mt-3 flex items-center gap-2">
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-600">
+                        {result.source}
+                      </span>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1 text-xs font-medium text-sky-700 hover:text-sky-800"
+                      >
+                        Open thread <ArrowUpRight className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </SectionCard>
+        </SectionCard>
+      </div>
 
       <div className="space-y-5 xl:col-span-2">
         <SectionCard
@@ -492,5 +494,6 @@ export default function Home() {
     </div>
   );
 }
+
 
 
