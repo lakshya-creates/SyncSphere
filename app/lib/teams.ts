@@ -5,11 +5,13 @@ export async function sendTeamsPing(userId: string, aiDecision: any) {
   if (!webhookUrl) throw new Error("Webhook URL missing");
 
   const formattedLinks = aiDecision.reference_links
+    ?.slice(0, 2)
     .map((link: any) => {
       const emoji = link.type === "github_code" ? "💻" : "💬";
-      return `${emoji} [${link.description}](${link.url})`;
+      const shortDesc = link.description.length > 55 ? link.description.substring(0, 55) + "..." : link.description;
+      return `${emoji} [${shortDesc}](${link.url})`;
     })
-    .join("\n");
+    .join("\n") || "No context links found.";
 
   let statusColor = 5814783; // Blue for normal
   if (aiDecision.routing_strategy.action === "queue_and_wait") statusColor = 16753920; // Orange for waiting
@@ -25,6 +27,14 @@ export async function sendTeamsPing(userId: string, aiDecision: any) {
       ? `@${aiDecision.routing_strategy.fallback_github_handle}`
       : "None assigned";
 
+  const shortCause = aiDecision.analysis.root_cause?.length > 150 
+    ? aiDecision.analysis.root_cause.substring(0, 150) + "..." 
+    : aiDecision.analysis.root_cause;
+    
+  const shortTrust = aiDecision.analysis.trust_evaluation?.length > 100
+    ? aiDecision.analysis.trust_evaluation.substring(0, 100) + "..."
+    : aiDecision.analysis.trust_evaluation;
+
   const discordPayload = {
     content: "🤖 **SyncSphere Orchestrator: Advanced Routing Event**",
     embeds: [
@@ -34,7 +44,7 @@ export async function sendTeamsPing(userId: string, aiDecision: any) {
         fields: [
           {
             name: "Root Cause & Trust",
-            value: `${aiDecision.analysis.root_cause}\n*Trust Eval:* ${aiDecision.analysis.trust_evaluation}`,
+            value: `${shortCause}\n*Trust Eval:* ${shortTrust}`,
           },
           {
             name: "Routing Strategy",
@@ -42,7 +52,7 @@ export async function sendTeamsPing(userId: string, aiDecision: any) {
           },
           {
             name: "Deep Links",
-            value: formattedLinks || "No context links found.",
+            value: formattedLinks,
           },
         ],
       },

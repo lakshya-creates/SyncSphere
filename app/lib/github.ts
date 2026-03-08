@@ -51,14 +51,25 @@ export async function postGitHubComment(
     }
   }
 
-  const formattedLinks =
-    aiDecision.reference_links
-      ?.map((link: any) => `- [${link.description}](${link.url})`)
+  const formattedLinks = aiDecision.reference_links
+      ?.slice(0, 2)
+      .map((link: any) => {
+         const shortDesc = link.description.length > 60 ? link.description.substring(0, 60) + "..." : link.description;
+         return `- [${shortDesc}](${link.url})`;
+      })
       .join("\n") || "No historical links found.";
 
   const fallbackText = aiDecision.routing_strategy.fallback_github_handle
     ? `@${aiDecision.routing_strategy.fallback_github_handle}`
     : "None assigned";
+
+  const shortCause = aiDecision.analysis.root_cause?.length > 250 
+    ? aiDecision.analysis.root_cause.substring(0, 250) + "..." 
+    : aiDecision.analysis.root_cause;
+    
+  const shortTrust = aiDecision.analysis.trust_evaluation?.length > 150
+    ? aiDecision.analysis.trust_evaluation.substring(0, 150) + "..."
+    : aiDecision.analysis.trust_evaluation;
 
   const commentBody = `### 🤖 SyncSphere AI Orchestrator
 
@@ -69,10 +80,10 @@ export async function postGitHubComment(
 * **Action Executed:** \`${aiDecision.routing_strategy.action}\`
 
 **🧠 Root Cause Analysis:**
-${aiDecision.analysis.root_cause}
+${shortCause}
 
 **🛡️ Trust & History Evaluation:**
-${aiDecision.analysis.trust_evaluation}
+${shortTrust}
 
 **🔗 Context & Deep Links:**
 ${formattedLinks}
